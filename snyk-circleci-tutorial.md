@@ -9,7 +9,7 @@ Securing cloud native applications requires shifting the ownership of these appl
 ## Getting started with Snyk
 The Snyk Orb makes it easy for DevSecOps teams to integrate testing into CircleCI workflows. With the Snyk Orb you can install, run tests, and monitor projects with Snyk. You can also set a threshold for failing builds, depending on your risk tolerance. Scan results present clear information to help developers quickly make sense of the issues and fixes, if available.
 
-In tutorial lab we'll use the Snyk Orb to demonstrate how to prevent new vulnerabilities from passing through the build process by adding automated Snyk tests into a CircleCI workflow.
+In this tutorial we use the Snyk Orb to demonstrate how to prevent vulnerabilities from passing through the build process by adding automated Snyk tests into a CircleCI workflow.
 
 ### Prerequisites
 To follow this guide, you'll need:
@@ -22,12 +22,12 @@ You need a Snyk API Token to use the Snyk Orb. [Create a Snyk Token](https://sup
 This tutorial makes the most sense after completing the Infrastructure as Code module in [CircleCI Academy](https://academy.circleci.com). You can complete this tutorial without completing the module, but the Terraform workflows will fail.
 
 ### Fork the demo project
-For this tutorial we'll use the repository from the CircleCI Academy module. There, you create a workflow that uses Terraform to create a GKE cluster and deploy an application into it as part of a continuous delivery pipeline. 
+In this tutorial we use the repository from the CircleCI Academy module. There, you create a workflow that uses Terraform to create a GKE cluster and deploy an application into it as part of a continuous delivery pipeline. 
 
 If you didn't complete the module, navigate to the [learn_iac repo](https://github.com/datapunkz/learn_iac) and fork it. Once forked, head to the [CircleCI Projects](https://app.circleci.com/) page, click `Set up Project`, then select `Use Existing Config`.
 
 ### Ensure dependencies are secure and compliant with Snyk Open Source
-If you completed the Academy module, you deployed an application with open source components, but didn't check them for vulnerabilities. Integrating Snyk Open Source into the CI workflow makes security and compliance testing part of the pipeline, allowing us to prevent vulnerable applications from gating their way into production.
+If you completed the Academy module, you deployed an application with open source components, but didn't check them for vulnerabilities! Integrating Snyk Open Source into the CI workflow makes security and compliance testing part of the pipeline, allowing us to prevent applications with vulnerable dependencies from making their way into production.
 
 To add Snyk Open Source, open the .circleci/config.yml file in an editor then add the Snyk Orb to the top, replacing @x.y.z with the latest version of the [Snyk Orb in the Orb Registry](https://circleci.com/developer/orbs/orb/snyk/snyk). 
 
@@ -43,9 +43,7 @@ jobs:
       - image: circleci/node:12
 ````
 
-Adding the Orb exposes the snyk commands and jobs to your workflow. Consider your requirements when choosing where in the workflow to add them. 
-
-For this example, add the `snyk/scan` command to the `run_tests` job to check for vulnerabilities and license issues before running unit tests.
+Adding the Orb exposes the snyk commands and jobs to your workflow. Consider your requirements when choosing where in the workflow to add them. For this example, add the `snyk/scan` command to the `run_tests` job to check for vulnerabilities and license issues before running unit tests.
 
 ````YAML
 jobs:
@@ -63,7 +61,11 @@ jobs:
           name: Run Unit Tests
 ````
 
-Save and commit your changes. When the workflow runs, the `run_tests` job fails because the `package.json` file declares vulnerable dependencies. Good thing you checked! However, you might not want to introduce too much disruption into your pipelines too early. 
+Save and commit your changes. When the workflow runs, the `run_tests` job fails because the `package.json` file declares vulnerable dependencies. 
+
+![Open Source issues](./images/opensource-issues.png)
+
+Good thing you checked! However, you might not want to introduce too much disruption into your pipelines too early. 
 
 It's possible to customize this behavior by passing parameters to the Orb. To allow the workflow to continue uninterrupted, add the `fail-on-issues` parameter to the `snyk/scan` command and commit your changes. For a list of available parameters, view the [Snyk Orb in the Orb Registry](https://circleci.com/developer/orbs/orb/snyk/snyk).
 
@@ -79,7 +81,11 @@ It's possible to customize this behavior by passing parameters to the Orb. To al
           command: |
 ````
 
-Next time the pipeline runs, it will still find issues, but it will continue to the next job. Visit the Snyk documentation to learn how to [remediate open source vulnerabilities](https://support.snyk.io/hc/en-us/articles/360006113798-Remediate-your-vulnerabilities).
+Next time the pipeline runs, it will still find issues, but it will continue to the next job. 
+
+![Passed Open Source Scan](./images/passed-scan.png)
+
+To learn how to interpret the CLI results to [remediate open source vulnerabilities](https://support.snyk.io/hc/en-us/articles/360006113798-Remediate-your-vulnerabilities), visit the Snyk documentation.
 
 ### Scan and secure container images with Snyk Container
 Besides your application dependencies, your choice of container base image can also introduce vulnerable open source components by means of operating system packages and language runtimes. 
@@ -113,12 +119,16 @@ build_docker_image:
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push $DOCKER_LOGIN/$IMAGE_NAME
 ````
-Using Snyk to break the build after a container scan is one way to prevent an image with vulnerabilities from being pushed to the container registry. Like with Snyk Open Source, it's possible to customize this behavior by passing additional parameters to the Orb.
+When the scan completes, Snyk will fail the stage because of high severity vulnerabilities. Like with Snyk Open Source, it's possible to customize this behavior by passing additional parameters to the Orb.
 
-Visit the Snyk Documentation to learn how to [Understand Snyk Container CLI results](https://support.snyk.io/hc/en-us/articles/360003946937-Understanding-Snyk-Container-CLI-results).
+![Failed Container Scan](./images/failed-container-scan.png)
+
+Using Snyk to break the build after a container scan, like in this example, is one way to prevent an image with vulnerabilities from being pushed to the container registry. 
+
+Visit the Snyk Documentation to learn how to [Understand Snyk Container CLI results](https://support.snyk.io/hc/en-us/articles/360003946937-Understanding-Snyk-Container-CLI-results), and be sure to explore out the section on Base Image Remediation Guidance!
 
 ### Use Snyk Infrastructure as Code to fix Terraform misconfigurations
-Applications are no longer just code and open source components. In the cloud era, infrastructure is now part of the application. How the underlying infrastructure is configured can also expose your application to risks. That's where Snyk IaC comes in. 
+As we discussed above, applications are no longer only code and open source components. In the cloud era, infrastructure is part of the application. How the underlying infrastructure is configured can expose your application to risks. That's where Snyk IaC comes in. 
 
 As of Orb version `1.0.0`, Snyk Infrastructure as Code is available as a `job` that can be added directly into the `workflow`. For this example, add the snyk/scan-iac job before the gke-create-cluster job to check Terraform files are correctly configured before creating the cloud infrastructure. The args parameter points to which files to check for misconfigurations and can also be used to pass other [Snyk CLI arguments](https://support.snyk.io/hc/en-us/articles/360018728618-Test-your-configuration-files).
 
@@ -137,10 +147,22 @@ workflows:
             - snyk/scan-iac
 ````
 
+Like with all other Snyk scans, the default behavior is to break the build in case of any misconfigurations. 
 
+![IAC Issues](./images/iac-issues.png)
+
+Visit the Snyk Academy to learn ways to [customize the IaC scan parameters](https://solutions.snyk.io/partner-workshops/circleci/scan-terraform-with-the-snyk-orb/adjusting-snyk-iac-scan-parameters) in this workflow.
 
 ### Augmenting the Developer Experience
+If you made it this far, congratulations! Your delivery pipeline now has security testing for issues introduced by your application's open source dependencies, container base image, and the Terraform files that deploy it into a production GKE environment. We can make this information more accessible and actionable for developers by also integrating Snyk where they work, the IDE and their Source Control repository. 
 
+To integrate Snyk into SCM, import your fork of the `learn-iac` repo to Snyk using the SCM integration. Visit the [Snyk documentation for the GitHub integration](https://support.snyk.io/hc/en-us/articles/360004032117-GitHub-integration) to learn how. Once imported, you'll see the files we tested in this tutorial, and their risks, in the Snyk UI. This enhances developer productivity with features like Fix Pull Requests - visit the [SCM integration best practices](https://support.snyk.io/hc/en-us/articles/360018010597-Snyk-SCM-integration-good-practices) page to learn more.
+
+![Repo imported to Snyk](./images/imported-project.png)
+
+To use Snyk in your IDE, download any of the [IDE Plugins available](https://snyk.io/ide-plugins/), or use the [Snyk CLI](https://support.snyk.io/hc/en-us/articles/360003812578-CLI-reference). 
 
 ## Conclusion
-If you made it this far, congratulations! Your delivery pipeline now has security testing for issues introduced by your application's open source dependencies, container base image, and the Terraform files that deploy it into a production GKE environment. 
+Awareness of the security risks introduced by your developers' choice of open source, container, and infrastructure configuration is an essential first step toward building a culture of collaboration between security teams responsible for preventing production issues, operations teams responsible for pipelines running, and developers in charge of fixing issues. 
+
+Visit the Snyk Documentation to read about [best practices for integrating Snyk into CI/CD pipelines](https://support.snyk.io/hc/en-us/articles/360018245398-Snyk-CI-CD-Integration-good-practices-). We're excited you're looking into Snyk to help you develop fast and stay secure. 
