@@ -165,4 +165,4 @@ To use Snyk in your IDE, download any of the [IDE Plugins available](https://sny
 ## Conclusion
 Awareness of the security risks introduced by your developers' choice of open source, container, and infrastructure configuration is an essential first step toward building a culture of collaboration between security teams responsible for preventing production issues, operations teams responsible for pipelines running, and developers in charge of fixing issues. 
 
-Visit the Snyk Documentation to read about [best practices for integrating Snyk into CI/CD pipelines](https://support.snyk.io/hc/en-us/articles/360018245398-Snyk-CI-CD-Integration-good-practices-). We're excited you're looking into Snyk to help you develop fast and stay secure. 
+We're excited you're looking into Snyk to help you develop fast and stay secure. Visit the Snyk Documentation to read our [best practices for integrating Snyk into CI/CD pipelines](https://support.snyk.io/hc/en-us/articles/360018245398-Snyk-CI-CD-Integration-good-practices-). 
