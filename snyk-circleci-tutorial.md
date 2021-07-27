@@ -156,11 +156,11 @@ Visit the Snyk Academy to learn ways to [customize the IaC scan parameters](http
 ### Augmenting the Developer Experience
 If you made it this far, congratulations! Your delivery pipeline now has security testing for issues introduced by your application's open source dependencies, container base image, and the Terraform files that deploy it into a production GKE environment. We can make this information more accessible and actionable for developers by also integrating Snyk where they work, the IDE and their Source Control repository. 
 
+To use Snyk in an IDE, download any of the [IDE Plugins available](https://snyk.io/ide-plugins/), or use the [Snyk CLI](https://support.snyk.io/hc/en-us/articles/360003812578-CLI-reference). 
+
 To integrate Snyk into SCM, import your fork of the `learn-iac` repo to Snyk using the SCM integration. Visit the [Snyk documentation for the GitHub integration](https://support.snyk.io/hc/en-us/articles/360004032117-GitHub-integration) to learn how. Once imported, you'll see the files we tested in this tutorial, and their risks, in the Snyk UI. This enhances developer productivity with features like Fix Pull Requests - visit the [SCM integration best practices](https://support.snyk.io/hc/en-us/articles/360018010597-Snyk-SCM-integration-good-practices) page to learn more.
 
 ![Repo imported to Snyk](./images/imported-project.png)
-
-To use Snyk in your IDE, download any of the [IDE Plugins available](https://snyk.io/ide-plugins/), or use the [Snyk CLI](https://support.snyk.io/hc/en-us/articles/360003812578-CLI-reference). 
 
 ## Conclusion
 Awareness of the security risks introduced by your developers' choice of open source, container, and infrastructure configuration is an essential first step toward building a culture of collaboration between security teams responsible for preventing production issues, operations teams responsible for pipelines running, and developers in charge of fixing issues. 
