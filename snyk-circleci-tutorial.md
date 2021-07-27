@@ -128,7 +128,7 @@ Using Snyk to break the build after a container scan, like in this example, is o
 Visit the Snyk Documentation to learn how to [Understand Snyk Container CLI results](https://support.snyk.io/hc/en-us/articles/360003946937-Understanding-Snyk-Container-CLI-results), and be sure to explore out the section on Base Image Remediation Guidance!
 
 ### Use Snyk Infrastructure as Code to fix Terraform misconfigurations
-As we discussed above, applications are no longer only code and open source components. In the cloud era, infrastructure is part of the application. How the underlying infrastructure is configured can expose your application to risks. That's where Snyk IaC comes in. 
+As we discussed above, modern applications are more than code and open source components; in the cloud era, infrastructure is part of the application. While Cloud Providers provide tools to manage cloud configuration, misconfiguration of cloud resources remains the most prevalent cloud vulnerability and can be exploited to access cloud data and services. That's where Snyk IaC comes in, to provide curated security information that gives developers what they need to find and fix configuration issues and move on. 
 
 As of Orb version `1.0.0`, Snyk Infrastructure as Code is available as a `job` that can be added directly into the `workflow`. For this example, add the snyk/scan-iac job before the gke-create-cluster job to check Terraform files are correctly configured before creating the cloud infrastructure. The args parameter points to which files to check for misconfigurations and can also be used to pass other [Snyk CLI arguments](https://support.snyk.io/hc/en-us/articles/360018728618-Test-your-configuration-files).
 
