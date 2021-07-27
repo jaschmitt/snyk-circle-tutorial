@@ -15,7 +15,7 @@ In this tutorial we use the Snyk Orb to demonstrate how to prevent vulnerabiliti
 To follow this guide, you'll need:
 1. A CircleCI Account
 2. A GitHub Account
-3. A Snyk Account
+3. A [Snyk](https://app.snyk.io/login?utm_campaign=Tutorial-Blog-Jul21&utm_medium=Partner&utm_source=CircleCI) Account
 
 You need a Snyk API Token to use the Snyk Orb. [Create a Snyk Token](https://support.snyk.io/hc/en-us/articles/360004008278-Revoking-and-regenerating-Snyk-API-tokens), then [set an Environment Variable in CircleCI](https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-project) called SNYK_TOKEN with its value. 
 
